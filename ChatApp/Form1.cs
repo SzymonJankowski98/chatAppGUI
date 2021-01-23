@@ -97,7 +97,7 @@ namespace ChatApp
 
                 //setThreadedStatusLabel("Wait! Sending...");
 
-                socketFd.BeginSend(Encoding.ASCII.GetBytes(this.textBoxLogin.Text), 0, this.textBoxLogin.Text.Length, 0, new AsyncCallback(SendCallback), state);
+                socketFd.BeginSend(Encoding.ASCII.GetBytes("log;" + this.textBoxLogin.Text), 0, this.textBoxLogin.Text.Length + 4, 0, new AsyncCallback(SendCallback), state);
 
                 //setThreadedStatusLabel("Wait! Reading...");
 
@@ -171,6 +171,9 @@ namespace ChatApp
                 {
                     /* get DNS host information */
                     Dns.BeginGetHostEntry("192.168.2.30", new AsyncCallback(GetHostEntryCallback), null);
+                    this.Hide();
+                    Form2 f2 = new Form2();
+                    f2.Show();
                 }
                 else
                 {
