@@ -20,6 +20,9 @@ namespace ChatApp
         private string chosenOne;
         private string data;
         private string answer = string.Empty;
+        private readonly string address = string.Empty;
+        private readonly int port;
+
         private int dataLength;
 
         // ManualResetEvent instances signal completion.  
@@ -30,12 +33,14 @@ namespace ChatApp
         private ManualResetEvent receiveDone =
             new ManualResetEvent(false);
 
-        public Form3(string usr, string chosen, string msgs)
+        public Form3(string usr, string chosen, string msgs, string adr, int port)
         {
             InitializeComponent();
             this.user = usr;
             this.chosenOne = chosen;
             this.data = msgs;
+            this.address = adr;
+            this.port = port;
             this.dataLength = this.data.Length;
             this.Show();
             this.Activate();
@@ -45,7 +50,7 @@ namespace ChatApp
             {
                 while (true)
                 {
-                    System.Threading.Thread.Sleep(1000);
+                    System.Threading.Thread.Sleep(5000);
                     //UpdateMessages();
                     AppendTextBox("hi.  ");
                 }
@@ -66,23 +71,28 @@ namespace ChatApp
             richTextBoxMessages.Clear();
             Font bold = new Font(richTextBoxMessages.Font, FontStyle.Bold);
             Font regular = new Font(richTextBoxMessages.Font, FontStyle.Regular);
-            var msges = this.data.Split(';');
-            foreach (var part in msges)
+            if (this.data.Length > 0)
             {
-                if (part != "")
+                var msges = this.data.Split(';');
+                foreach (var part in msges)
                 {
-                    var sep = part.IndexOf(':');
-                    if (this.richTextBoxMessages.Text.Length > 0)
+                    if (part != "")
                     {
-                        this.richTextBoxMessages.AppendText(Environment.NewLine);
+                        var sep = part.IndexOf(':');
+                        if (this.richTextBoxMessages.Text.Length > 0)
+                        {
+                            this.richTextBoxMessages.AppendText(Environment.NewLine);
+                        }
+                        this.richTextBoxMessages.SelectionFont = bold;
+                        string name = part.Substring(0, sep);
+                        if (name == this.user) { this.richTextBoxMessages.SelectionColor = Color.Blue; }
+                        if (name == this.chosenOne) { this.richTextBoxMessages.SelectionColor = Color.Red; }
+                        this.richTextBoxMessages.AppendText(name.ToUpper() + ": ");
+                        this.richTextBoxMessages.SelectionColor = this.richTextBoxMessages.ForeColor;
+                        this.richTextBoxMessages.SelectionFont = regular;
+                        this.richTextBoxMessages.AppendText(part.Substring(sep + 1).Replace('~', ' '));
+                        this.richTextBox1.ResetText();
                     }
-                    this.richTextBoxMessages.SelectionFont = bold;
-                    this.richTextBoxMessages.SelectionColor = Color.Blue;
-                    this.richTextBoxMessages.AppendText(part.Substring(0, sep).ToUpper() + ": ");
-                    this.richTextBoxMessages.SelectionColor = this.richTextBoxMessages.ForeColor;
-                    this.richTextBoxMessages.SelectionFont = regular;
-                    this.richTextBoxMessages.AppendText(part.Substring(sep + 1));
-                    this.richTextBox1.ResetText();
                 }
             }
 
@@ -118,9 +128,10 @@ namespace ChatApp
                 this.richTextBoxMessages.AppendText(this.user.ToUpper() + ": ");
                 this.richTextBoxMessages.SelectionColor = this.richTextBoxMessages.ForeColor;
                 this.richTextBoxMessages.SelectionFont = regular;
-                this.richTextBoxMessages.AppendText(this.richTextBox1.Text);
+                this.richTextBoxMessages.AppendText(this.richTextBox1.Text.Replace(';', ':'));
 
-                string dat = "snd;" + this.user + ";" + this.chosenOne + ";" + this.richTextBox1.Text;
+                string dat = "snd;" + this.user + ";" + this.chosenOne + ";" + this.richTextBox1.Text.Replace(';',':');
+                dat = dat.Replace(' ', '~');
                 CommWithServer(dat, false);
 
                 this.richTextBoxMessages.SelectionStart = this.richTextBoxMessages.Text.Length;
@@ -129,14 +140,21 @@ namespace ChatApp
                 this.richTextBox1.ResetText();
             }
         }
-
+        private void richTextBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                button1_Click(sender, new EventArgs());
+                e.Handled = true;
+            }
+        }
         private void CommWithServer(string toSend, Boolean withReceive)
         {
             // Connect to a remote device.  
             try
             {
-                IPAddress ipAddress = IPAddress.Parse("192.168.2.21");
-                IPEndPoint remoteEP = new IPEndPoint(ipAddress, 1234);
+                IPAddress ipAddress = IPAddress.Parse(this.address);
+                IPEndPoint remoteEP = new IPEndPoint(ipAddress, this.port);
                 Socket client = new Socket(ipAddress.AddressFamily,
                     SocketType.Stream, ProtocolType.Tcp);
 
@@ -255,6 +273,5 @@ namespace ChatApp
                 Console.WriteLine(e.ToString());
             }
         }
-
     }
 }

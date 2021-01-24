@@ -19,10 +19,10 @@ namespace ChatApp
         {
             InitializeComponent();
         }
-        private string Login()
+        private string Login(string adr, int port)
         {
-            IPAddress ipAddress = IPAddress.Parse("192.168.0.74");
-            IPEndPoint endPoint = new IPEndPoint(ipAddress, 1234);
+            IPAddress ipAddress = IPAddress.Parse(adr);
+            IPEndPoint endPoint = new IPEndPoint(ipAddress, port);
 
             Socket socketFd = new Socket(ipAddress.AddressFamily,
                 SocketType.Stream, ProtocolType.Tcp);
@@ -75,12 +75,12 @@ namespace ChatApp
         {
             try
             {
-                string friends = Login();
+                string friends = Login(this.textBoxAdres.Text, Int32.Parse(this.textBoxPort.Text));
                 if (friends.Length > 0)
                 {
                     if (friends == ";") { friends = ""; }
                     this.Hide();
-                    Form2 f2 = new Form2(this.textBoxLogin.Text, friends);
+                    Form2 f2 = new Form2(this.textBoxLogin.Text, friends, this.textBoxAdres.Text, Int32.Parse(this.textBoxPort.Text));
                     f2.Activate();
                 }
             }

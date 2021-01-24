@@ -18,6 +18,8 @@ namespace ChatApp
         private readonly string user = string.Empty;
         private string response = string.Empty;
         private string[] friends;
+        private readonly string address = string.Empty;
+        private readonly int port;
 
         // ManualResetEvent instances signal completion.  
         private ManualResetEvent connectDone =
@@ -27,11 +29,13 @@ namespace ChatApp
         private ManualResetEvent receiveDone =
             new ManualResetEvent(false);
 
-        public Form2(string usr, string fre)
+        public Form2(string usr, string fre, string adr, int port)
         {
             InitializeComponent();
             this.Show();
             this.Activate();
+            this.address = adr;
+            this.port = port;
             this.user = usr;
             this.labelHello.Text = "Hello " + this.user + "!";
             makeFriendsList(fre);
@@ -42,8 +46,8 @@ namespace ChatApp
             // Connect to a remote device.  
             try
             {
-                IPAddress ipAddress = IPAddress.Parse("192.168.0.74");
-                IPEndPoint remoteEP = new IPEndPoint(ipAddress, 1234);
+                IPAddress ipAddress = IPAddress.Parse(this.address);
+                IPEndPoint remoteEP = new IPEndPoint(ipAddress, this.port);
                 Socket client = new Socket(ipAddress.AddressFamily,
                     SocketType.Stream, ProtocolType.Tcp);
 
@@ -212,7 +216,8 @@ namespace ChatApp
                         CommWithServer(dat, true);
                         int l = this.response.TakeWhile(b => b != 0).Count();
                         string toPass = this.response.Substring(0, l);
-                        new Form3(this.user, chosenUser, toPass);
+                        toPass = toPass.Replace('~', ' ');
+                        new Form3(this.user, chosenUser, toPass, this.address, this.port);
                         this.response = String.Empty;
                     }
                 }
