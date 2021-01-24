@@ -62,6 +62,7 @@
             this.richTextBoxMessages.Location = new System.Drawing.Point(13, 38);
             this.richTextBoxMessages.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBoxMessages.Name = "richTextBoxMessages";
+            this.richTextBoxMessages.ReadOnly = true;
             this.richTextBoxMessages.Size = new System.Drawing.Size(755, 359);
             this.richTextBoxMessages.TabIndex = 2;
             this.richTextBoxMessages.Text = "";
