@@ -108,7 +108,7 @@ namespace ChatApp
 
                 //setThreadedStatusLabel("Wait! Sending...");
 
-                socketFd.BeginSend(Encoding.ASCII.GetBytes("log" + this.textBoxLogin.Text), 0, this.textBoxLogin.Text.Length, 0, new AsyncCallback(SendCallback), state);
+                socketFd.BeginSend(Encoding.ASCII.GetBytes("log;" + this.textBoxLogin.Text), 0, this.textBoxLogin.Text.Length + 4, 0, new AsyncCallback(SendCallback), state);
 
                 //setThreadedStatusLabel("Wait! Reading...");
 
