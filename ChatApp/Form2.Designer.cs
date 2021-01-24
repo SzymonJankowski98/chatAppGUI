@@ -28,37 +28,74 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.listBoxFriends = new System.Windows.Forms.ListBox();
+            this.labelHello = new System.Windows.Forms.Label();
+            this.labelAdd = new System.Windows.Forms.Label();
+            this.textBoxAdd = new System.Windows.Forms.TextBox();
+            this.buttonAdd = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // label1
+            // listBoxFriends
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 7);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "label1";
+            this.listBoxFriends.BackColor = System.Drawing.SystemColors.HighlightText;
+            this.listBoxFriends.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.listBoxFriends.FormattingEnabled = true;
+            this.listBoxFriends.ItemHeight = 25;
+            this.listBoxFriends.Location = new System.Drawing.Point(12, 51);
+            this.listBoxFriends.Name = "listBoxFriends";
+            this.listBoxFriends.ScrollAlwaysVisible = true;
+            this.listBoxFriends.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.listBoxFriends.Size = new System.Drawing.Size(426, 379);
+            this.listBoxFriends.TabIndex = 0;
+            this.listBoxFriends.SelectedIndexChanged += new System.EventHandler(this.listBoxFriends_SelectedIndexChanged);
             // 
-            // listBox1
+            // labelHello
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(12, 34);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(340, 433);
-            this.listBox1.TabIndex = 1;
-            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            this.labelHello.AutoSize = true;
+            this.labelHello.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelHello.Location = new System.Drawing.Point(9, 19);
+            this.labelHello.Name = "labelHello";
+            this.labelHello.Size = new System.Drawing.Size(70, 26);
+            this.labelHello.TabIndex = 1;
+            this.labelHello.Text = "label3";
+            // 
+            // labelAdd
+            // 
+            this.labelAdd.AutoSize = true;
+            this.labelAdd.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelAdd.Location = new System.Drawing.Point(9, 456);
+            this.labelAdd.Name = "labelAdd";
+            this.labelAdd.Size = new System.Drawing.Size(143, 24);
+            this.labelAdd.TabIndex = 2;
+            this.labelAdd.Text = "Add new friend:";
+            // 
+            // textBoxAdd
+            // 
+            this.textBoxAdd.Location = new System.Drawing.Point(12, 485);
+            this.textBoxAdd.Name = "textBoxAdd";
+            this.textBoxAdd.Size = new System.Drawing.Size(294, 22);
+            this.textBoxAdd.TabIndex = 3;
+            // 
+            // buttonAdd
+            // 
+            this.buttonAdd.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.buttonAdd.Location = new System.Drawing.Point(327, 482);
+            this.buttonAdd.Name = "buttonAdd";
+            this.buttonAdd.Size = new System.Drawing.Size(111, 29);
+            this.buttonAdd.TabIndex = 4;
+            this.buttonAdd.Text = "Add";
+            this.buttonAdd.UseVisualStyleBackColor = true;
+            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
             // 
             // Form2
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(364, 486);
-            this.Controls.Add(this.listBox1);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(450, 529);
+            this.Controls.Add(this.buttonAdd);
+            this.Controls.Add(this.textBoxAdd);
+            this.Controls.Add(this.labelAdd);
+            this.Controls.Add(this.labelHello);
+            this.Controls.Add(this.listBoxFriends);
             this.Name = "Form2";
-            this.Text = "Form2";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -68,5 +105,13 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ListBox listBoxFriends;
+        private System.Windows.Forms.Label labelHello;
+        private System.Windows.Forms.Label labelAdd;
+        private System.Windows.Forms.TextBox textBoxAdd;
+        private System.Windows.Forms.Button buttonAdd;
     }
 }
