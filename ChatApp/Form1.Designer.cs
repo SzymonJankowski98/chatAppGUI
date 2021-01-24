@@ -49,7 +49,6 @@
             this.textBoxLogin.Name = "textBoxLogin";
             this.textBoxLogin.Size = new System.Drawing.Size(168, 20);
             this.textBoxLogin.TabIndex = 1;
-            this.textBoxLogin.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // labelLogin
             // 
@@ -59,7 +58,6 @@
             this.labelLogin.Size = new System.Drawing.Size(33, 13);
             this.labelLogin.TabIndex = 2;
             this.labelLogin.Text = "Login";
-            this.labelLogin.Click += new System.EventHandler(this.label1_Click);
             // 
             // Form1
             // 
