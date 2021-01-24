@@ -18,7 +18,6 @@ namespace ChatApp
         private readonly string user = string.Empty;
         private string response = string.Empty;
         private string[] friends;
-        private Socket clientSocket;
 
         // ManualResetEvent instances signal completion.  
         private ManualResetEvent connectDone =
@@ -37,27 +36,35 @@ namespace ChatApp
             this.labelHello.Text = "Hello " + this.user + "!";
             makeFriendsList(fre);
             updateFriendsList();
-            StartClient();
         }
-        private void StartClient()
+        private void CommWithServer(string toSend, Boolean withReceive)
         {
             // Connect to a remote device.  
             try
             {
-                // Establish the remote endpoint for the socket.  
-                // The name of the
-                // remote device is "host.contoso.com".  
                 IPAddress ipAddress = IPAddress.Parse("192.168.0.74");
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, 1234);
-
-                // Create a TCP/IP socket.  
-                this.clientSocket = new Socket(ipAddress.AddressFamily,
+                Socket client = new Socket(ipAddress.AddressFamily,
                     SocketType.Stream, ProtocolType.Tcp);
 
                 // Connect to the remote endpoint.  
-                this.clientSocket.BeginConnect(remoteEP,
-                    new AsyncCallback(ConnectCallback), this.clientSocket);
+                client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
                 connectDone.WaitOne();
+
+                Send(client, toSend);
+                sendDone.WaitOne();
+
+                if (withReceive)
+                {
+                    Receive(client);
+                    receiveDone.WaitOne();
+                }
+                client.Shutdown(SocketShutdown.Both);
+                client.Close();
+
+                this.connectDone.Reset();
+                this.sendDone.Reset();
+                this.receiveDone.Reset();
             }
             catch (Exception e)
             {
@@ -68,7 +75,8 @@ namespace ChatApp
         {
             try
             {
-                this.clientSocket.EndConnect(ar);
+                Socket client = (Socket)ar.AsyncState;
+                client.EndConnect(ar);
                 connectDone.Set();
             }
             catch (Exception e)
@@ -76,16 +84,16 @@ namespace ChatApp
                 Console.WriteLine(e.ToString());
             }
         }
-        private void Receive()
+        private void Receive(Socket client)
         {
             try
             {
                 // Create the state object.  
                 StateObject state = new StateObject();
-                state.m_SocketFd = this.clientSocket;
+                state.m_SocketFd = client;
 
                 // Begin receiving the data from the remote device.  
-                this.clientSocket.BeginReceive(state.m_DataBuf, 0, StateObject.BUF_SIZE, 0,
+                client.BeginReceive(state.m_DataBuf, 0, StateObject.BUF_SIZE, 0,
                     new AsyncCallback(ReceiveCallback), state);
             }
             catch (Exception e)
@@ -127,14 +135,14 @@ namespace ChatApp
                 Console.WriteLine(e.ToString());
             }
         }
-        private void Send(String data)
+        private void Send(Socket client, String data)
         {
             // Convert the string data to byte data using ASCII encoding.  
             byte[] byteData = Encoding.ASCII.GetBytes(data);
 
             // Begin sending the data to the remote device.  
-            this.clientSocket.BeginSend(byteData, 0, byteData.Length, 0,
-                new AsyncCallback(SendCallback), this.clientSocket);
+            client.BeginSend(byteData, 0, byteData.Length, 0,
+                new AsyncCallback(SendCallback), client);
         }
         private void SendCallback(IAsyncResult ar)
         {
@@ -181,8 +189,7 @@ namespace ChatApp
                 }
                 this.friends[this.friends.Length-1] = this.textBoxAdd.Text;
                 string dat = "add;" + this.user + ";" + this.textBoxAdd.Text;
-                Send(dat);
-                sendDone.WaitOne();
+                CommWithServer(dat, false);
                 this.textBoxAdd.Text = String.Empty;
                 updateFriendsList();
             }
@@ -202,11 +209,7 @@ namespace ChatApp
                     if (chosenUser.Length > 0)
                     {
                         string dat = "get;" + this.user + ";" + chosenUser;
-                        Send(dat);
-                        sendDone.WaitOne();
-
-                        Receive();
-                        receiveDone.WaitOne();
+                        CommWithServer(dat, true);
                         int l = this.response.TakeWhile(b => b != 0).Count();
                         string toPass = this.response.Substring(0, l);
                         new Form3(this.user, chosenUser, toPass);
@@ -223,11 +226,6 @@ namespace ChatApp
 
         private void button2_Click(object sender, EventArgs e)
         {
-            //Send("out;");
-            //sendDone.WaitOne();
-            // Release the socket.
-            this.clientSocket.Shutdown(SocketShutdown.Both);
-            this.clientSocket.Close();
             this.Close();
             Application.Exit();
         }
