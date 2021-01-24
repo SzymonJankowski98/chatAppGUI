@@ -28,13 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-
             this.listBoxFriends = new System.Windows.Forms.ListBox();
             this.labelHello = new System.Windows.Forms.Label();
             this.labelAdd = new System.Windows.Forms.Label();
             this.textBoxAdd = new System.Windows.Forms.TextBox();
             this.buttonAdd = new System.Windows.Forms.Button();
-
+            this.buttonLogout = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listBoxFriends
@@ -53,7 +52,6 @@
             // 
             // labelHello
             // 
-
             this.labelHello.AutoSize = true;
             this.labelHello.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.labelHello.Location = new System.Drawing.Point(9, 19);
@@ -90,9 +88,23 @@
             this.buttonAdd.UseVisualStyleBackColor = true;
             this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
             // 
+            // buttonLogout
+            // 
+            this.buttonLogout.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.buttonLogout.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.buttonLogout.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.buttonLogout.Location = new System.Drawing.Point(343, 19);
+            this.buttonLogout.Name = "buttonLogout";
+            this.buttonLogout.Size = new System.Drawing.Size(95, 26);
+            this.buttonLogout.TabIndex = 5;
+            this.buttonLogout.Text = "Logout";
+            this.buttonLogout.UseVisualStyleBackColor = false;
+            this.buttonLogout.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Form2
             // 
             this.ClientSize = new System.Drawing.Size(450, 529);
+            this.Controls.Add(this.buttonLogout);
             this.Controls.Add(this.buttonAdd);
             this.Controls.Add(this.textBoxAdd);
             this.Controls.Add(this.labelAdd);
@@ -106,14 +118,11 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ListBox listBoxFriends;
         private System.Windows.Forms.Label labelHello;
         private System.Windows.Forms.Label labelAdd;
         private System.Windows.Forms.TextBox textBoxAdd;
         private System.Windows.Forms.Button buttonAdd;
-
+        private System.Windows.Forms.Button buttonLogout;
     }
 }
