@@ -49,6 +49,7 @@
             this.listBoxFriends.Size = new System.Drawing.Size(426, 379);
             this.listBoxFriends.TabIndex = 0;
             this.listBoxFriends.SelectedIndexChanged += new System.EventHandler(this.listBoxFriends_SelectedIndexChanged);
+            this.listBoxFriends.DrawItem += new System.Windows.Forms.DrawItemEventHandler(listBoxFriends_DrawItem);
             // 
             // labelHello
             // 
