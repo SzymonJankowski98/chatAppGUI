@@ -24,6 +24,7 @@ namespace ChatApp
         private readonly int port;
 
         private int dataLength;
+        CancellationTokenSource ts = new CancellationTokenSource();
 
         // ManualResetEvent instances signal completion.  
         private ManualResetEvent connectDone =
@@ -45,16 +46,21 @@ namespace ChatApp
             this.Show();
             this.Activate();
             this.labelUser.Text = this.chosenOne;
+            CancellationToken ct = this.ts.Token;
             PrintMessages();
             Task.Factory.StartNew(() =>
             {
                 while (true)
                 {
                     System.Threading.Thread.Sleep(5000);
+                    if (ct.IsCancellationRequested)
+                    {
+                        break;
+                    }
                     //UpdateMessages();
                     AppendTextBox("hi.  ");
                 }
-            });
+            }, ct);
         }
 
         public void AppendTextBox(string value)
@@ -68,36 +74,43 @@ namespace ChatApp
         }
         private void PrintMessages()
         {
-            richTextBoxMessages.Clear();
-            Font bold = new Font(richTextBoxMessages.Font, FontStyle.Bold);
-            Font regular = new Font(richTextBoxMessages.Font, FontStyle.Regular);
-            if (this.data.Length > 0)
+            try
             {
-                var msges = this.data.Split(';');
-                foreach (var part in msges)
+                richTextBoxMessages.Clear();
+                Font bold = new Font(richTextBoxMessages.Font, FontStyle.Bold);
+                Font regular = new Font(richTextBoxMessages.Font, FontStyle.Regular);
+                if (this.data.Length > 0)
                 {
-                    if (part != "")
+                    var msges = this.data.Split(';');
+                    foreach (var part in msges)
                     {
-                        var sep = part.IndexOf(':');
-                        if (this.richTextBoxMessages.Text.Length > 0)
+                        if (part != "")
                         {
-                            this.richTextBoxMessages.AppendText(Environment.NewLine);
+                            var sep = part.IndexOf(':');
+                            if (this.richTextBoxMessages.Text.Length > 0)
+                            {
+                                this.richTextBoxMessages.AppendText(Environment.NewLine);
+                            }
+                            this.richTextBoxMessages.SelectionFont = bold;
+                            string name = part.Substring(0, sep);
+                            if (name == this.user) { this.richTextBoxMessages.SelectionColor = Color.Blue; }
+                            if (name == this.chosenOne) { this.richTextBoxMessages.SelectionColor = Color.Red; }
+                            this.richTextBoxMessages.AppendText(name.ToUpper() + ": ");
+                            this.richTextBoxMessages.SelectionColor = this.richTextBoxMessages.ForeColor;
+                            this.richTextBoxMessages.SelectionFont = regular;
+                            this.richTextBoxMessages.AppendText(part.Substring(sep + 1).Replace('~', ' '));
+                            this.richTextBox1.ResetText();
                         }
-                        this.richTextBoxMessages.SelectionFont = bold;
-                        string name = part.Substring(0, sep);
-                        if (name == this.user) { this.richTextBoxMessages.SelectionColor = Color.Blue; }
-                        if (name == this.chosenOne) { this.richTextBoxMessages.SelectionColor = Color.Red; }
-                        this.richTextBoxMessages.AppendText(name.ToUpper() + ": ");
-                        this.richTextBoxMessages.SelectionColor = this.richTextBoxMessages.ForeColor;
-                        this.richTextBoxMessages.SelectionFont = regular;
-                        this.richTextBoxMessages.AppendText(part.Substring(sep + 1).Replace('~', ' '));
-                        this.richTextBox1.ResetText();
                     }
                 }
-            }
 
-            this.richTextBoxMessages.SelectionStart = this.richTextBoxMessages.Text.Length;
-            this.richTextBoxMessages.ScrollToCaret();
+                this.richTextBoxMessages.SelectionStart = this.richTextBoxMessages.Text.Length;
+                this.richTextBoxMessages.ScrollToCaret();
+            }
+            catch (ObjectDisposedException)
+            {
+                
+            }
         }
         private void UpdateMessages()
         {
@@ -139,6 +152,10 @@ namespace ChatApp
                 this.dataLength += this.richTextBox1.Text.Length + this.user.Length + 1;
                 this.richTextBox1.ResetText();
             }
+        }
+        void Form3_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.ts.Cancel();
         }
         private void richTextBox1_KeyDown(object sender, KeyEventArgs e)
         {

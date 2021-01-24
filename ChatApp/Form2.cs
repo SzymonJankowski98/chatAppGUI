@@ -20,6 +20,7 @@ namespace ChatApp
         private string[] friends;
         private readonly string address = string.Empty;
         private readonly int port;
+        private Form form_1;
 
         // ManualResetEvent instances signal completion.  
         private ManualResetEvent connectDone =
@@ -29,11 +30,12 @@ namespace ChatApp
         private ManualResetEvent receiveDone =
             new ManualResetEvent(false);
 
-        public Form2(string usr, string fre, string adr, int port)
+        public Form2(string usr, string fre, string adr, int port, Form obj)
         {
             InitializeComponent();
             this.Show();
             this.Activate();
+            this.form_1 = obj;
             this.address = adr;
             this.port = port;
             this.user = usr;
@@ -241,7 +243,8 @@ namespace ChatApp
         private void button2_Click(object sender, EventArgs e)
         {
             this.Close();
-            Application.Exit();
+            this.form_1.Show();
+            //Application.Exit();
         }
     }
     public class StateObject

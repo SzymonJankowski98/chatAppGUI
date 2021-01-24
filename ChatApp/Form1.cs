@@ -15,9 +15,11 @@ namespace ChatApp
 {
     public partial class Form1 : Form
     {
+        private Form form_1;
         public Form1()
         {
             InitializeComponent();
+            this.form_1 = this;
         }
         private string Login(string adr, int port)
         {
@@ -80,7 +82,7 @@ namespace ChatApp
                 {
                     if (friends == ";") { friends = ""; }
                     this.Hide();
-                    Form2 f2 = new Form2(this.textBoxLogin.Text, friends, this.textBoxAdres.Text, Int32.Parse(this.textBoxPort.Text));
+                    Form2 f2 = new Form2(this.textBoxLogin.Text, friends, this.textBoxAdres.Text, Int32.Parse(this.textBoxPort.Text), this.form_1);
                     f2.Activate();
                 }
             }

@@ -83,6 +83,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(Form3_FormClosed);
             this.ClientSize = new System.Drawing.Size(787, 512);
             this.Controls.Add(this.labelUser);
             this.Controls.Add(this.richTextBoxMessages);
