@@ -41,10 +41,29 @@ namespace ChatApp
             this.Activate();
             this.labelUser.Text = this.chosenOne;
             PrintMessages();
+            Task.Factory.StartNew(() =>
+            {
+                while (true)
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    //UpdateMessages();
+                    AppendTextBox("hi.  ");
+                }
+            });
+        }
 
+        public void AppendTextBox(string value)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<string>(AppendTextBox), new object[] { value });
+                return;
+            }
+            UpdateMessages();
         }
         private void PrintMessages()
         {
+            richTextBoxMessages.Clear();
             Font bold = new Font(richTextBoxMessages.Font, FontStyle.Bold);
             Font regular = new Font(richTextBoxMessages.Font, FontStyle.Regular);
             var msges = this.data.Split(';');
@@ -79,8 +98,10 @@ namespace ChatApp
             if (newAnswer.Length > this.dataLength)
             {
                 this.data = newAnswer;
-                this.dataLength = newAnswer.Length; 
+                this.dataLength = newAnswer.Length;
+                PrintMessages();
             }
+            System.Console.WriteLine("update");
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -114,7 +135,7 @@ namespace ChatApp
             // Connect to a remote device.  
             try
             {
-                IPAddress ipAddress = IPAddress.Parse("192.168.0.74");
+                IPAddress ipAddress = IPAddress.Parse("192.168.2.21");
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, 1234);
                 Socket client = new Socket(ipAddress.AddressFamily,
                     SocketType.Stream, ProtocolType.Tcp);
