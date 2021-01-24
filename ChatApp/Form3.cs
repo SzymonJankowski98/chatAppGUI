@@ -88,14 +88,16 @@ namespace ChatApp
             Font regular = new Font(richTextBoxMessages.Font, FontStyle.Regular);
             if (this.richTextBox1.Text.Length > 0)
             {
-                this.richTextBoxMessages.AppendText(Environment.NewLine);
+                if (this.richTextBoxMessages.Text.Length > 0)
+                {
+                    this.richTextBoxMessages.AppendText(Environment.NewLine);
+                }
                 this.richTextBoxMessages.SelectionFont = bold;
                 this.richTextBoxMessages.SelectionColor = Color.Blue;
                 this.richTextBoxMessages.AppendText(this.user.ToUpper() + ": ");
                 this.richTextBoxMessages.SelectionColor = this.richTextBoxMessages.ForeColor;
                 this.richTextBoxMessages.SelectionFont = regular;
                 this.richTextBoxMessages.AppendText(this.richTextBox1.Text);
-                this.richTextBoxMessages.AppendText(Environment.NewLine);
 
                 string dat = "snd;" + this.user + ";" + this.chosenOne + ";" + this.richTextBox1.Text;
                 CommWithServer(dat, false);
