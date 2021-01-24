@@ -180,11 +180,9 @@ namespace ChatApp
                 {
                     int sep = fr.IndexOf(':');
                     string one = fr.Substring(0, sep);
-                    if (fr[fr.Length - 1] == 1)
+                    if (fr[fr.Length - 1] == '1')
                     {
-                        this.listBoxFriends.Items.Add(one);
-                        this.listBoxFriends.Items.Add(new Dictionary<string, object> { { "Text", one},
-                                                         { "ForeColor", Color.Green}});
+                        this.listBoxFriends.Items.Add('*' + one);
                     }
                     else
                     {
@@ -192,23 +190,6 @@ namespace ChatApp
                     }
                 }
             }
-        }
-        void listBoxFriends_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            Dictionary<string, object> props = (this.listBoxFriends.Items[e.Index] as Dictionary<string, object>);
-            SolidBrush backgroundBrush = new SolidBrush(props.ContainsKey("BackColor") ? (Color)props["BackColor"] : e.BackColor);
-            SolidBrush foregroundBrush = new SolidBrush(props.ContainsKey("ForeColor") ? (Color)props["ForeColor"] : e.ForeColor);
-            Font textFont = props.ContainsKey("Font") ? (Font)props["Font"] : e.Font;
-            string text = props.ContainsKey("Text") ? (string)props["Text"] : string.Empty;
-            RectangleF rectangle = new RectangleF(new PointF(e.Bounds.X, e.Bounds.Y), new SizeF(e.Bounds.Width, g.MeasureString(text, textFont).Height));
-
-            g.FillRectangle(backgroundBrush, rectangle);
-            g.DrawString(text, textFont, foregroundBrush, rectangle);
-
-            backgroundBrush.Dispose();
-            foregroundBrush.Dispose();
-            g.Dispose();
         }
         private void buttonAdd_Click(object sender, EventArgs e)
         {
@@ -218,7 +199,7 @@ namespace ChatApp
                 { 
                     Array.Resize(ref friends, friends.Length + 1);
                 }
-                this.friends[this.friends.Length-1] = this.textBoxAdd.Text;
+                this.friends[this.friends.Length-1] = this.textBoxAdd.Text + ":0";
                 string dat = "add;" + this.user + ";" + this.textBoxAdd.Text;
                 CommWithServer(dat, false);
                 this.textBoxAdd.Text = String.Empty;
@@ -239,6 +220,7 @@ namespace ChatApp
                     string chosenUser = this.listBoxFriends.SelectedItem.ToString();
                     if (chosenUser.Length > 0)
                     {
+                        if (chosenUser[0] == '*') { chosenUser = chosenUser.Substring(1); }
                         string dat = "get;" + this.user + ";" + chosenUser;
                         CommWithServer(dat, true);
                         int l = this.response.TakeWhile(b => b != 0).Count();
