@@ -21,6 +21,7 @@ namespace ChatApp
         private readonly string address = string.Empty;
         private readonly int port;
         private Form form_1;
+        CancellationTokenSource ts = new CancellationTokenSource();
 
         // ManualResetEvent instances signal completion.  
         private ManualResetEvent connectDone =
@@ -42,6 +43,28 @@ namespace ChatApp
             this.labelHello.Text = "Hello " + this.user + "!";
             makeFriendsList(fre);
             updateFriendsList();
+            CancellationToken ct = this.ts.Token;
+            Task.Factory.StartNew(() =>
+            {
+                while (true)
+                {
+                    System.Threading.Thread.Sleep(20000);
+                    if (ct.IsCancellationRequested)
+                    {
+                        break;
+                    }
+                    RefreshForm2("hi.  ");
+                }
+            }, ct);
+        }
+        public void RefreshForm2(string value)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<string>(RefreshForm2), new object[] { value });
+                return;
+            }
+            getUpdatedList();
         }
         private void CommWithServer(string toSend, Boolean withReceive)
         {
@@ -168,11 +191,21 @@ namespace ChatApp
                 Console.WriteLine(e.ToString());
             }
         }
+
+        private void getUpdatedList()
+        {
+            string dat = "log;" + this.user;
+            CommWithServer(dat, true);
+            this.response = this.response.Substring(4);
+            int l = this.response.TakeWhile(b => b != 0).Count();
+            string toPass = this.response.Substring(0, l);
+            makeFriendsList(toPass);
+            updateFriendsList();
+        }
         private void makeFriendsList(string fre)
         {
             this.friends = fre.Split(';');
         }
-
         private void updateFriendsList()
         {
             this.listBoxFriends.Items.Clear();
@@ -197,14 +230,23 @@ namespace ChatApp
         {
             if (this.textBoxAdd.Text.Length > 0 && this.listBoxFriends.FindString(this.textBoxAdd.Text) == ListBox.NoMatches)
             {
-                if (this.friends[0] != "") 
+                /*if (this.friends[0] != "") 
                 { 
                     Array.Resize(ref friends, friends.Length + 1);
                 }
-                this.friends[this.friends.Length-1] = this.textBoxAdd.Text + ":0";
+                this.friends[this.friends.Length-1] = this.textBoxAdd.Text + ":0";*/
                 string dat = "add;" + this.user + ";" + this.textBoxAdd.Text;
-                CommWithServer(dat, false);
+                CommWithServer(dat, true);
+                if(this.response[0] == '1')
+                {
+                    if (this.friends[0] != "")
+                    {
+                        Array.Resize(ref friends, friends.Length + 1);
+                    }
+                    this.friends[this.friends.Length - 1] = this.textBoxAdd.Text + ":0";
+                }
                 this.textBoxAdd.Text = String.Empty;
+                this.response = String.Empty;
                 updateFriendsList();
             }
             else
@@ -242,9 +284,9 @@ namespace ChatApp
 
         private void button2_Click(object sender, EventArgs e)
         {
+            this.ts.Cancel();
             this.Close();
             this.form_1.Show();
-            //Application.Exit();
         }
     }
     public class StateObject
