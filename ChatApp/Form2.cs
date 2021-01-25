@@ -17,9 +17,11 @@ namespace ChatApp
     {
         private readonly string user = string.Empty;
         private string response = string.Empty;
+        private string response2 = string.Empty;
         private string[] friends;
         private readonly string address = string.Empty;
         private readonly int port;
+        private int addc = 0;
         private Form form_1;
         CancellationTokenSource ts = new CancellationTokenSource();
 
@@ -153,7 +155,14 @@ namespace ChatApp
                     // All the data has arrived; put it in response.  
                     if (state.m_StringBuilder.Length > 1)
                     {
-                        this.response = state.m_StringBuilder.ToString();
+                        if (this.addc == 0)
+                        {
+                            this.response = state.m_StringBuilder.ToString();
+                        }
+                        else if (this.addc == 1)
+                        {
+                            this.response2 = state.m_StringBuilder.ToString();
+                        }
                     }
                     // Signal that all bytes have been received.  
                     receiveDone.Set();
@@ -228,7 +237,7 @@ namespace ChatApp
         }
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            if (this.textBoxAdd.Text.Length > 0 && this.listBoxFriends.FindString(this.textBoxAdd.Text) == ListBox.NoMatches)
+            if (this.textBoxAdd.Text.Length > 0 && this.listBoxFriends.FindStringExact(this.textBoxAdd.Text) == ListBox.NoMatches)
             {
                 /*if (this.friends[0] != "") 
                 { 
@@ -236,8 +245,9 @@ namespace ChatApp
                 }
                 this.friends[this.friends.Length-1] = this.textBoxAdd.Text + ":0";*/
                 string dat = "add;" + this.user + ";" + this.textBoxAdd.Text;
+                this.addc = 1;
                 CommWithServer(dat, true);
-                if(this.response[0] == '1')
+                if(this.response2[0] == '1')
                 {
                     if (this.friends[0] != "")
                     {
@@ -246,7 +256,8 @@ namespace ChatApp
                     this.friends[this.friends.Length - 1] = this.textBoxAdd.Text + ":0";
                 }
                 this.textBoxAdd.Text = String.Empty;
-                this.response = String.Empty;
+                this.addc = 0;
+                this.response2 = String.Empty;
                 updateFriendsList();
             }
             else
