@@ -32,7 +32,7 @@ namespace ChatApp
             {
                 socketFd.Connect(endPoint);
 
-                socketFd.Send(Encoding.ASCII.GetBytes("log;" + this.textBoxLogin.Text), this.textBoxLogin.Text.Length + 4, 0);
+                socketFd.Send(Encoding.ASCII.GetBytes("log;" + this.textBoxLogin.Text + "\n"), this.textBoxLogin.Text.Length + 5, 0);
 
                 byte[] buffer = new byte[1024];
                 int howManyBytes = 0;

@@ -204,7 +204,7 @@ namespace ChatApp
 
         private void getUpdatedList()
         {
-            string dat = "log;" + this.user;
+            string dat = "log;" + this.user + "\n";
             CommWithServer(dat, true);
             this.response = this.response.Substring(4);
             int l = this.response.TakeWhile(b => b != 0).Count();
@@ -240,7 +240,7 @@ namespace ChatApp
         {
             if (this.textBoxAdd.Text.Length > 0 && this.listBoxFriends.FindStringExact(this.textBoxAdd.Text) == ListBox.NoMatches)
             {
-                string dat = "add;" + this.user + ";" + this.textBoxAdd.Text;
+                string dat = "add;" + this.user + ";" + this.textBoxAdd.Text + "\n";
                 this.addc = 1;
                 CommWithServer(dat, true);
                 if(this.response2[0] == '1')
@@ -272,7 +272,7 @@ namespace ChatApp
                     if (chosenUser.Length > 0)
                     {
                         if (chosenUser[0] == '*') { chosenUser = chosenUser.Substring(1); }
-                        string dat = "get;" + this.user + ";" + chosenUser;
+                        string dat = "get;" + this.user + ";" + chosenUser + "\n";
                         CommWithServer(dat, true);
                         int l = this.response.TakeWhile(b => b != 0).Count();
                         string toPass = this.response.Substring(0, l);

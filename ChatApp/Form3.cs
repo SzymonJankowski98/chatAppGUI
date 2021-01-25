@@ -114,7 +114,7 @@ namespace ChatApp
         }
         private void UpdateMessages()
         {
-            string dat = "get;" + this.user + ";" + this.chosenOne;
+            string dat = "get;" + this.user + ";" + this.chosenOne + "\n";
             CommWithServer(dat, true);
             int l = this.answer.TakeWhile(b => b != 0).Count();
             string newAnswer = this.answer.Substring(0, l);
@@ -143,7 +143,7 @@ namespace ChatApp
                 this.richTextBoxMessages.SelectionFont = regular;
                 this.richTextBoxMessages.AppendText(this.richTextBox1.Text.Replace(';', ':'));
 
-                string dat = "snd;" + this.user + ";" + this.chosenOne + ";" + this.richTextBox1.Text.Replace(';',':');
+                string dat = "snd;" + this.user + ";" + this.chosenOne + ";" + this.richTextBox1.Text.Replace(';',':') + "\n";
                 dat = dat.Replace(' ', '~');
                 CommWithServer(dat, false);
 
