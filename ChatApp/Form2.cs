@@ -23,6 +23,7 @@ namespace ChatApp
         private readonly int port;
         private int addc = 0;
         private Form form_1;
+        private Form3[] chatsArr = Array.Empty<Form3>(); 
         CancellationTokenSource ts = new CancellationTokenSource();
 
         // ManualResetEvent instances signal completion.  
@@ -218,7 +219,7 @@ namespace ChatApp
         private void updateFriendsList()
         {
             this.listBoxFriends.Items.Clear();
-            if (this.friends != null)
+            if (this.friends != null && this.friends[0] != "")
             {
                 foreach (var fr in this.friends)
                 {
@@ -239,11 +240,6 @@ namespace ChatApp
         {
             if (this.textBoxAdd.Text.Length > 0 && this.listBoxFriends.FindStringExact(this.textBoxAdd.Text) == ListBox.NoMatches)
             {
-                /*if (this.friends[0] != "") 
-                { 
-                    Array.Resize(ref friends, friends.Length + 1);
-                }
-                this.friends[this.friends.Length-1] = this.textBoxAdd.Text + ":0";*/
                 string dat = "add;" + this.user + ";" + this.textBoxAdd.Text;
                 this.addc = 1;
                 CommWithServer(dat, true);
@@ -281,7 +277,9 @@ namespace ChatApp
                         int l = this.response.TakeWhile(b => b != 0).Count();
                         string toPass = this.response.Substring(0, l);
                         toPass = toPass.Replace('~', ' ');
-                        new Form3(this.user, chosenUser, toPass, this.address, this.port);
+                        Form3 chat = new Form3(this.user, chosenUser, toPass, this.address, this.port);
+                        chat.Show();
+                        chatsArr.Append(chat);
                         this.response = String.Empty;
                     }
                 }
@@ -297,7 +295,12 @@ namespace ChatApp
         {
             this.ts.Cancel();
             this.Close();
-            this.form_1.Show();
+            Application.Restart();
+        }
+        void Form2_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.ts.Cancel();
+            Application.Exit();
         }
     }
     public class StateObject

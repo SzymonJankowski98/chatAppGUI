@@ -111,6 +111,7 @@
             this.Controls.Add(this.labelAdd);
             this.Controls.Add(this.labelHello);
             this.Controls.Add(this.listBoxFriends);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(Form2_FormClosed);
             this.Name = "Form2";
             this.ResumeLayout(false);
             this.PerformLayout();
