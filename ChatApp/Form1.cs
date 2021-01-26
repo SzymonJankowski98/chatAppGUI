@@ -11,6 +11,9 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 
+/* 
+ * Klasa ekranu logowania.
+ */
 namespace ChatApp
 {
     public partial class Form1 : Form
@@ -21,6 +24,10 @@ namespace ChatApp
             InitializeComponent();
             this.form_1 = this;
         }
+        /*
+         * Metoda odpowiadająca za łączenie się z serwerem, wysłanie zapytania o możliwość zalogowania oraz
+         * odebranie listy kontaktów od serwera.
+         */
         private string Login(string adr, int port)
         {
             IPAddress ipAddress = IPAddress.Parse(adr);
@@ -73,6 +80,10 @@ namespace ChatApp
             }
             return "";
         }
+        /*
+         * Event handler odpowiadający za naciśnięcie przycisku "Login".
+         * Przy sukcesie otwiera okno drugie z kontaktami.
+         */
         private void button1_Click(object sender, EventArgs e)
         {
             try

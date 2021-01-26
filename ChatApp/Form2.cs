@@ -13,6 +13,9 @@ using System.Net.Sockets;
 
 namespace ChatApp
 {
+    /* 
+     * Klasa ekranu z kontaktami.
+     */
     public partial class Form2 : Form
     {
         private readonly string user = string.Empty;
@@ -47,6 +50,10 @@ namespace ChatApp
             makeFriendsList(fre);
             updateFriendsList();
             CancellationToken ct = this.ts.Token;
+
+            /*
+             * Tworzenie wątku odpowiadającego za aktualizowanie ekranu.
+             */
             Task.Factory.StartNew(() =>
             {
                 while (true)
@@ -60,6 +67,10 @@ namespace ChatApp
                 }
             }, ct);
         }
+        /*
+         * Metoda odświeżająca okno kontaktów.
+         * Jeśli ktoś napisał do nas wiadomość, przed jego nazwą pojawia się gwiazdka.
+         */
         public void RefreshForm2(string value)
         {
             if (InvokeRequired)
@@ -69,6 +80,9 @@ namespace ChatApp
             }
             getUpdatedList();
         }
+        /*
+         * Metoda odpowiadająca za asynchroniczne połączenie z serwerem.
+         */
         private void CommWithServer(string toSend, Boolean withReceive)
         {
             // Connect to a remote device.  
@@ -116,6 +130,9 @@ namespace ChatApp
                 Console.WriteLine(e.ToString());
             }
         }
+        /*
+         * Poniżej metody odpowiadające za wysyłanie oraz odbieranie asynchroniczne
+         */
         private void Receive(Socket client)
         {
             try
@@ -201,7 +218,10 @@ namespace ChatApp
                 Console.WriteLine(e.ToString());
             }
         }
-
+        /*
+         * Metoda odpowiadająca za wysyłanie zapytania do serwera, czy
+         * coś się zmieniło na naszej liście kontaktów (aktualizacja nieprzeczytanych wiadomości, dodanie do kontaktu).
+         */
         private void getUpdatedList()
         {
             string dat = "log;" + this.user + "\n";
@@ -212,10 +232,16 @@ namespace ChatApp
             makeFriendsList(toPass);
             updateFriendsList();
         }
+        /*
+         * Metoda tworząca liste znajomych z ciągu znaków, które odbiera od serwera.
+         */
         private void makeFriendsList(string fre)
         {
             this.friends = fre.Split(';');
         }
+        /*
+         * Metoda aktualizująca kontakty w liście widocznej w GUI.
+         */
         private void updateFriendsList()
         {
             this.listBoxFriends.Items.Clear();
@@ -236,6 +262,10 @@ namespace ChatApp
                 }
             }
         }
+        /*
+         * Event Handler odpowiadający za przycisk "ADD",
+         * Wysyła prośbę o dodanie nowego kontaktu do serwera.
+         */
         private void buttonAdd_Click(object sender, EventArgs e)
         {
             if (this.textBoxAdd.Text.Length > 0 && this.listBoxFriends.FindStringExact(this.textBoxAdd.Text) == ListBox.NoMatches)
@@ -261,7 +291,11 @@ namespace ChatApp
                 this.textBoxAdd.Text = String.Empty;
             }
         }
-
+        /*
+         * Event Handler odpowiadający za wybór kontaktu z listy
+         * Wysyła prośbę o otrzymanie bazy wiadomości pomiędzy użytkownikiem
+         * oraz wybraną z listy osobą.
+         */
         private void listBoxFriends_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -291,18 +325,29 @@ namespace ChatApp
             this.listBoxFriends.ClearSelected();
         }
 
+        /*
+         * Event Handler odpowiadający za przycisk "LOGOUT",
+         * Zamyka ekran kontaktów i otwiera ponownie ekran logowania.
+         */
         private void button2_Click(object sender, EventArgs e)
         {
             this.ts.Cancel();
             this.Close();
             Application.Restart();
         }
+        /*
+         * Event Handler odpowiadający za zamykanie tego ekranu,
+         * Zatrzymuje wątki oraz zamyka aplikacje.
+         */
         void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.ts.Cancel();
             Application.Exit();
         }
     }
+    /*
+     * Klasa wspomagająca asynchroniczne połączenie z serwerem.
+     */
     public class StateObject
     {
         public const int BUF_SIZE = 1024;

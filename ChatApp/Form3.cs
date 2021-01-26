@@ -14,6 +14,9 @@ using System.Net.Sockets;
 
 namespace ChatApp
 {
+    /* 
+     * Klasa ekranu czatu.
+     */
     public partial class Form3 : Form
     {
         private string user;
@@ -48,6 +51,10 @@ namespace ChatApp
             this.labelUser.Text = this.chosenOne;
             CancellationToken ct = this.ts.Token;
             PrintMessages();
+
+            /*
+             * Tworzenie wątku odpowiadającego za aktualizowanie czatu.
+             */
             Task.Factory.StartNew(() =>
             {
                 while (true)
@@ -62,7 +69,9 @@ namespace ChatApp
                 }
             }, ct);
         }
-
+        /*
+         * Metoda pomagająca w aktualizowaniu czatu
+         */
         public void AppendTextBox(string value)
         {
             if (InvokeRequired)
@@ -72,6 +81,10 @@ namespace ChatApp
             }
             UpdateMessages();
         }
+        /*
+         * Metoda wypisująca wiadomości w okienku czatu.
+         * Dla każdego użytkownika podaje inny kolor, żeby czat był czytelniejszy.
+         */
         private void PrintMessages()
         {
             try
@@ -112,6 +125,10 @@ namespace ChatApp
                 
             }
         }
+        /*
+         * Metoda odpowiadająca za wysłanie do serwera zapytania o 
+         * zaktualizowanie wiadomości na czacie.
+         */
         private void UpdateMessages()
         {
             string dat = "get;" + this.user + ";" + this.chosenOne + "\n";
@@ -126,6 +143,11 @@ namespace ChatApp
             }
             System.Console.WriteLine("update");
         }
+
+        /*
+         * Event Handler odpowiadający za przycisk "SEND",
+         * Wysyła prośbę o wysłanie wiadomości do serwera.
+         */
         private void button1_Click(object sender, EventArgs e)
         {
             Font bold = new Font(richTextBoxMessages.Font, FontStyle.Bold);
@@ -153,10 +175,18 @@ namespace ChatApp
                 this.richTextBox1.ResetText();
             }
         }
+        /*
+         * Event Handler odpowiadający za zamknięcie ekranu czatu,
+         * Wyłącza wątek aktualizujący czat.
+         */
         void Form3_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.ts.Cancel();
         }
+        /*
+         * Event Handler umożliwiający wysyłanie wiadomości przez naciśnięcie 
+         * przycisku "ENTER".
+         */
         private void richTextBox1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -165,6 +195,9 @@ namespace ChatApp
                 e.Handled = true;
             }
         }
+        /*
+         * Metoda odpowiadająca za asynchroniczne połączenie z serwerem.
+         */
         private void CommWithServer(string toSend, Boolean withReceive)
         {
             // Connect to a remote device.  
@@ -212,6 +245,9 @@ namespace ChatApp
                 Console.WriteLine(e.ToString());
             }
         }
+        /*
+         * Poniżej metody odpowiadające za wysyłanie oraz odbieranie asynchroniczne
+         */
         private void Receive(Socket client)
         {
             try
